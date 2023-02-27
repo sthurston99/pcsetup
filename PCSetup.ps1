@@ -43,9 +43,9 @@ Invoke-WebRequest -Uri ($WingetUrl + "download/" + $WingetVersion + "/Microsoft.
 Add-AppxPackage ($AdminPath + "winget.msixbundle")
 
 # Install Winget Programs
-& winget install Google.Chrome
-& winget install Adobe.Acrobat.Reader.64-bit
-& winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml"
+& winget install Google.Chrome --accept-source-agreements --accept-package-agreements
+& winget install Adobe.Acrobat.Reader.64-bit --accept-source-agreements --accept-package-agreements
+& winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements
 
 # Run Dell Command Update
 Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/scan -outputLog=$AdminPath`dcuscan.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
