@@ -23,7 +23,7 @@ Set-Item -Path DellSmbios:\PowerManagement\DeepSleepCtrl Disabled
 Set-Item -Path DellSmbios:\PowerManagement\BlockSleep Enabled
 
 # Set Serial Number as Computer Name
-(Get-WmiObject Win32_ComputerSystem).Rename((wmic bios get serialnumber /format:csv | ConvertFrom-Csv).SerialNumber)
+(Get-WmiObject Win32_ComputerSystem).Rename((wmic bios get serialnumber /format:csv | ConvertFrom-Csv).SerialNumber) | Out-Null
 
 # Set Power Settings
 $p = Get-CimInstance -Name root\cimv2\power -Class Win32_PowerPlan -Filter "ElementName = 'High Performance'"
@@ -43,9 +43,9 @@ Invoke-WebRequest -Uri ($WingetUrl + "download/" + $WingetVersion + "/Microsoft.
 Add-AppxPackage ($AdminPath + "winget.msixbundle")
 
 # Install Winget Programs
-& winget install Google.Chrome --accept-source-agreements --accept-package-agreements
-& winget install Adobe.Acrobat.Reader.64-bit --accept-source-agreements --accept-package-agreements
-& winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements
+& winget install Google.Chrome --accept-source-agreements --accept-package-agreements | Out-Null
+& winget install Adobe.Acrobat.Reader.64-bit --accept-source-agreements --accept-package-agreements | Out-Null
+& winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements | Out-Null
 
 # Run Dell Command Update
 Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/scan -outputLog=$AdminPath`dcuscan.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
