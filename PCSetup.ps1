@@ -1,6 +1,16 @@
 $AdminPath = "C:\Admin\"
 $WingetUrl = "https://github.com/microsoft/winget-cli/releases/"
 
+# Check for Admin Rights
+$identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+$principal = New-Object Security.Principal.WindowsPrincipal $identity
+If(-Not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Host "ERROR: Not running in elevated PowerShell"
+    Write-Host -NoNewLine 'Press any key to exit...';
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+    exit
+}
+
 # Registers Powershell Gallery
 If ($null -eq (Get-PSRepository -Name "PSGallery")) {
     If (((Get-Host).Version).Major -gt 5) {
