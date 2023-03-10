@@ -50,7 +50,7 @@ If((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p+$a)).Curre
 
 # Set Power Settings
 $p = Get-CimInstance -Name root\cimv2\power -Class Win32_PowerPlan -Filter "ElementName = 'High Performance'"
-powercfg /setactive ([string]$p.InstanceID).Replace("Microsoft:PowerPlan\{", "").Replace("}", "")
+If ($p) { powercfg /setactive ([string]$p.InstanceID).Replace("Microsoft:PowerPlan\{", "").Replace("}", "") }
 powercfg /hibernate off
 
 # Set Timezone
