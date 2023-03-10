@@ -28,9 +28,22 @@ If ($null -eq (Get-Module -ListAvailable -Name DellBIOSProvider)) {
 Import-Module DellBIOSProvider
 
 # Configure BIOS Power Settings
-Set-Item -Path DellSmbios:\PowerManagement\AcPwrRecovery Last
-Set-Item -Path DellSmbios:\PowerManagement\DeepSleepCtrl Disabled
-Set-Item -Path DellSmbios:\PowerManagement\BlockSleep Enabled
+$p = "DellSmbios:\PowerManagement\"
+$a = "AcPwrRcvry"
+$v = "Last"
+If((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p+$a)).CurrentValue.Equals($v)) {
+    Set-Item -Path ($p+$a) $v
+}
+$a = "DeepSleepControl"
+$v = "Disabled"
+If((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p+$a)).CurrentValue.Equals($v)) {
+    Set-Item -Path ($p+$a) $v
+}
+$a = "BlockSleep"
+$v = "Enabled"
+If((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p+$a)).CurrentValue.Equals($v)) {
+    Set-Item -Path ($p+$a) $v
+}
 
 # Set Serial Number as Computer Name
 (Get-WmiObject Win32_ComputerSystem).Rename((wmic bios get serialnumber /format:csv | ConvertFrom-Csv).SerialNumber) | Out-Null
