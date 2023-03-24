@@ -57,8 +57,8 @@ powercfg /hibernate off
 Set-TimeZone -Id "Eastern Standard Time"
 
 # Run Decrapinator to clear programs
-Invoke-WebRequest https://raw.githubusercontent.com/sthurston99/Decrapinator/main/Decrapinator.ps1 -OutFile ($AdminPath + "Decrapinator.ps1")
-&($AdminPath + "Decrapinator.ps1")
+# Invoke-WebRequest https://raw.githubusercontent.com/sthurston99/Decrapinator/main/Decrapinator.ps1 -OutFile ($AdminPath + "Decrapinator.ps1")
+# &($AdminPath + "Decrapinator.ps1")
 
 # Install Winget
 $WingetVersion = [System.Net.WebRequest]::Create($WingetUrl + "latest").GetResponse().ResponseUri.OriginalString.split('/')[-1].Trim('v')
