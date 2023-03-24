@@ -69,6 +69,7 @@ Add-AppxPackage ($AdminPath + "winget.msixbundle")
 & winget install Google.Chrome --accept-source-agreements --accept-package-agreements | Out-Null
 & winget install Adobe.Acrobat.Reader.64-bit --accept-source-agreements --accept-package-agreements | Out-Null
 & winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements | Out-Null
+& winget install Dell.CommandUpdate.Universal --accept-source-agreements --accept-package-agreements | Out-Null
 
 # Run Dell Command Update
 Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/scan -outputLog=$AdminPath`dcuscan.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
