@@ -62,7 +62,7 @@ Set-TimeZone -Id "Eastern Standard Time"
 
 # Install Winget
 $WingetVersion = [System.Net.WebRequest]::Create($WingetUrl + "latest").GetResponse().ResponseUri.OriginalString.split('/')[-1].Trim('v')
-Invoke-WebRequest -Uri ($WingetUrl + "download/" + $WingetVersion + "/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle") -OutFile ($AdminPath + "winget.msixbundle")
+Invoke-WebRequest -Uri ($WingetUrl + "download/v" + $WingetVersion + "/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle") -OutFile ($AdminPath + "winget.msixbundle")
 Add-AppxPackage ($AdminPath + "winget.msixbundle")
 
 # Install Winget Programs
