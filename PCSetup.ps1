@@ -55,6 +55,7 @@ powercfg /hibernate off
 
 # Set Timezone
 Set-TimeZone -Id "Eastern Standard Time"
+W32tm /resync /force
 
 # Run Decrapinator to clear programs
 # Invoke-WebRequest https://raw.githubusercontent.com/sthurston99/Decrapinator/main/Decrapinator.ps1 -OutFile ($AdminPath + "Decrapinator.ps1")
