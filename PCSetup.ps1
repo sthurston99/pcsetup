@@ -16,9 +16,6 @@ If (!(Test-Path $AdminPath)) {
     New-Item $AdminPath -ItemType Directory -Confirm
 }
 
-# Get Manufacturer
-$manufacturer = (Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer.Split(" ")[0]
-
 # Registers Powershell Gallery
 If ($null -eq (Get-PSRepository -Name "PSGallery")) {
     If (((Get-Host).Version).Major -gt 5) {
@@ -27,6 +24,9 @@ If ($null -eq (Get-PSRepository -Name "PSGallery")) {
         Register-PSRepository -Name PSGallery -SourceLocation https://www.powershellgallery.com/api/v2/ -InstallationPolicy Trusted
     }
 }
+
+# Get Manufacturer
+$manufacturer = (Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer.Split(" ")[0]
 
 # Checks if is Dell before running Dell-Specific commands
 If ($manufacturer -eq "Dell") {
