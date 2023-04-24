@@ -12,9 +12,12 @@ If(-Not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrat
 }
 
 # Create Adminpath if does not exist
-If(!(Test-Path $AdminPath)) {
+If (!(Test-Path $AdminPath)) {
     New-Item $AdminPath -ItemType Directory -Confirm
 }
+
+# Get Manufacturer
+$manufacturer = (Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer.Split(" ")[0]
 
 # Registers Powershell Gallery
 If ($null -eq (Get-PSRepository -Name "PSGallery")) {
@@ -25,29 +28,33 @@ If ($null -eq (Get-PSRepository -Name "PSGallery")) {
     }
 }
 
-# Check for Dell BIOS Provider Module, install if does not exist
-If ($null -eq (Get-Module -ListAvailable -Name DellBIOSProvider)) {
-    Install-Module -Name DellBIOSProvider -AcceptLicense 
-}
+# Checks if is Dell before running Dell-Specific commands
+If ($manufacturer -eq "Dell") {
 
-Import-Module DellBIOSProvider
+    # Check for Dell BIOS Provider Module, install if does not exist
+    If ($null -eq (Get-Module -ListAvailable -Name DellBIOSProvider)) {
+        Install-Module -Name DellBIOSProvider -AcceptLicense 
+    }
 
-# Configure BIOS Power Settings
-$p = "DellSmbios:\PowerManagement\"
-$a = "AcPwrRcvry"
-$v = "Last"
-If((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p+$a)).CurrentValue.Equals($v)) {
-    Set-Item -Path ($p+$a) $v
-}
-$a = "DeepSleepControl"
-$v = "Disabled"
-If((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p+$a)).CurrentValue.Equals($v)) {
-    Set-Item -Path ($p+$a) $v
-}
-$a = "BlockSleep"
-$v = "Enabled"
-If((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p+$a)).CurrentValue.Equals($v)) {
-    Set-Item -Path ($p+$a) $v
+    Import-Module DellBIOSProvider
+
+    # Configure BIOS Power Settings
+    $p = "DellSmbios:\PowerManagement\"
+    $a = "AcPwrRcvry"
+    $v = "Last"
+    If ((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p + $a)).CurrentValue.Equals($v)) {
+        Set-Item -Path ($p + $a) $v
+    }
+    $a = "DeepSleepControl"
+    $v = "Disabled"
+    If ((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p + $a)).CurrentValue.Equals($v)) {
+        Set-Item -Path ($p + $a) $v
+    }
+    $a = "BlockSleep"
+    $v = "Enabled"
+    If ((Get-ChildItem $p).Attribute.Contains($a) -and !(Get-ChildItem ($p + $a)).CurrentValue.Equals($v)) {
+        Set-Item -Path ($p + $a) $v
+    }
 }
 
 # Set Serial Number as Computer Name
@@ -75,11 +82,13 @@ Add-AppxPackage ($AdminPath + "winget.msixbundle")
 & winget install Google.Chrome --accept-source-agreements --accept-package-agreements | Out-Null
 & winget install Adobe.Acrobat.Reader.64-bit --accept-source-agreements --accept-package-agreements | Out-Null
 & winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements | Out-Null
-& winget install Dell.CommandUpdate.Universal --accept-source-agreements --accept-package-agreements | Out-Null
 
 # Run Dell Command Update
-Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/scan -outputLog=$AdminPath`dcuscan.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
-Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/applyUpdates -forceUpdate=enable -outputLog=$AdminPath`dcu.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
+If ($manufacturer -eq "Dell") {
+    & winget install Dell.CommandUpdate.Universal --accept-source-agreements --accept-package-agreements | Out-Null
+    Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/scan -outputLog=$AdminPath`dcuscan.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
+    Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/applyUpdates -forceUpdate=enable -outputLog=$AdminPath`dcu.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
+}
 
 # Self Explanatory
 Restart-Computer
