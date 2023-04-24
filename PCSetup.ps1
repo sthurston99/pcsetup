@@ -4,9 +4,9 @@ $WingetUrl = "https://github.com/microsoft/winget-cli/releases/"
 # Check for Admin Rights
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = New-Object Security.Principal.WindowsPrincipal $identity
-If(-Not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+If (-Not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Host "ERROR: Not running in elevated PowerShell"
-    Write-Host -NoNewLine 'Press any key to exit...';
+    Write-Host -NoNewline 'Press any key to exit...';
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
     exit
 }
@@ -62,7 +62,9 @@ If ($manufacturer -eq "Dell") {
 
 # Set Power Settings
 $p = Get-CimInstance -Name root\cimv2\power -Class Win32_PowerPlan -Filter "ElementName = 'High Performance'"
-If ($p) { powercfg /setactive ([string]$p.InstanceID).Replace("Microsoft:PowerPlan\{", "").Replace("}", "") }
+If ($p) {
+    powercfg /setactive ([string]$p.InstanceID).Replace("Microsoft:PowerPlan\{", "").Replace("}", "") 
+}
 powercfg /hibernate off
 
 # Set Timezone
