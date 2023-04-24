@@ -11,6 +11,11 @@ If(-Not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrat
     exit
 }
 
+# Create Adminpath if does not exist
+If(!(Test-Path $AdminPath)) {
+    New-Item $AdminPath -ItemType Directory -Confirm
+}
+
 # Registers Powershell Gallery
 If ($null -eq (Get-PSRepository -Name "PSGallery")) {
     If (((Get-Host).Version).Major -gt 5) {
