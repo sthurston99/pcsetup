@@ -1,6 +1,6 @@
 $AdminPath = "C:\Admin\"
 $WingetUrl = "https://github.com/microsoft/winget-cli/releases/"
-$XamlUrl = "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml/2.7.3"
+$XamlUrl = "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml"
 
 # Check for Admin Rights
 Write-Host "Checking for Administrative Privileges..."
@@ -100,12 +100,20 @@ W32tm /resync /force
 # &($AdminPath + "Decrapinator.ps1")
 
 # Install Winget
+Write-Host "Checking for dependencies..."
+If(($null -eq (Get-AppxPackage "Microsoft.UI.Xaml.2.7" -AllUsers)) -and ($null -eq (Get-AppxPackage "Microsoft.UI.Xaml.2.7" -AllUsers))) {
+    Write-Host "Downloading Microsoft UI XAML..."
+    Invoke-WebRequest -Uri $XamlUrl -OutFile ($AdminPath + "xaml.zip")
+    Expand-Archive -LiteralPath ($AdminPath + "xaml.zip") -DestinationPath ($AdminPath + "xaml")
+    Add-AppxPackage ($AdminPath + "xaml\tools\AppX\x64\Release\Microsoft.UI.Xaml.2.8.appx") -AllUsers
+}
 Write-Host "Downloading Package Manager..."
 $WingetVersion = [System.Net.WebRequest]::Create($WingetUrl + "latest").GetResponse().ResponseUri.OriginalString.split('/')[-1].Trim('v')
 Invoke-WebRequest -Uri ($WingetUrl + "download/v" + $WingetVersion + "/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle") -OutFile ($AdminPath + "winget.msixbundle")
 Add-AppxPackage ($AdminPath + "winget.msixbundle")
 
 # Install Winget Programs
+Write-Host "Installing Software..."
 & winget install Google.Chrome --accept-source-agreements --accept-package-agreements | Out-Null
 & winget install Adobe.Acrobat.Reader.64-bit --accept-source-agreements --accept-package-agreements | Out-Null
 & winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements | Out-Null
