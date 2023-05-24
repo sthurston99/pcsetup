@@ -114,14 +114,14 @@ Add-AppxPackage ($AdminPath + "winget.msixbundle")
 
 # Install Winget Programs
 Write-Host "Installing Software..."
-& winget install Google.Chrome --accept-source-agreements --accept-package-agreements | Out-Null
-& winget install Adobe.Acrobat.Reader.64-bit --accept-source-agreements --accept-package-agreements | Out-Null
-& winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements | Out-Null
+& winget install Google.Chrome --accept-source-agreements --accept-package-agreements
+& winget install Adobe.Acrobat.Reader.64-bit --accept-source-agreements --accept-package-agreements
+& winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements
 
 # Run Dell Command Update
 If ($manufacturer -eq "Dell") {
 	Write-Host "Running Dell Command Update..."
-	& winget install Dell.CommandUpdate.Universal --accept-source-agreements --accept-package-agreements | Out-Null
+	& winget install Dell.CommandUpdate.Universal --accept-source-agreements --accept-package-agreements
 	Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/scan -outputLog=$AdminPath`dcuscan.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
 	Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/applyUpdates -forceUpdate=enable -outputLog=$AdminPath`dcu.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
 }
