@@ -32,7 +32,8 @@ If ($null -eq (Get-PSRepository -Name "PSGallery")) {
 	} Else {
 		Register-PSRepository -Name PSGallery -SourceLocation https://www.powershellgallery.com/api/v2/ -InstallationPolicy Trusted
 	}
-} ElseIf ((Get-PSRepository -Name "PSGallery").InstallationPolicy -ne "Trusted") {
+}
+If ((Get-PSRepository -Name "PSGallery").InstallationPolicy -ne "Trusted") {
 	Write-Host "PSGallery is not trusted. Trusting..."
 	Set-PSRepository -Name "PSGallery" -InstallationPolicy "Trusted"
 }
