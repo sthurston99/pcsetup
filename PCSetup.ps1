@@ -43,7 +43,7 @@ $manufacturer = (Get-CimInstance -ClassName Win32_ComputerSystem).Manufacturer.S
 Write-Host "Manufacturer is: $manufacturer"
 
 # Checks if is Dell before running Dell-Specific commands
-If ($manufacturer -eq "Dell") {
+If ($manufacturer -like "*Dell*") {
 
 	# Check for Dell BIOS Provider Module, install if does not exist
 	Write-Host "Checking for Dell BIOS Provider..."
@@ -120,7 +120,7 @@ Write-Host "Installing Software..."
 & winget install Microsoft.Office --override "/configure https://raw.githubusercontent.com/sthurston99/dotfiles/main/.odt.xml" --accept-source-agreements --accept-package-agreements
 
 # Run Dell Command Update
-If ($manufacturer -eq "Dell") {
+If ($manufacturer -like "*Dell*") {
 	Write-Host "Running Dell Command Update..."
 	& winget install Dell.CommandUpdate.Universal --accept-source-agreements --accept-package-agreements
 	Start-Process ($Env:Programfiles + "\Dell\CommandUpdate\dcu-cli") -ArgumentList "/scan -outputLog=$AdminPath`dcuscan.log -updateType=bios,firmware,driver,application,others -updateSeverity=security,critical,recommended,optional -silent" -Wait -NoNewWindow
