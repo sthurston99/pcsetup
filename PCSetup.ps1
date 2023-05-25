@@ -94,6 +94,7 @@ powercfg /hibernate off
 # Set Timezone
 Write-Host "Setting and Synchronizing Time..."
 Set-TimeZone -Id "Eastern Standard Time"
+net start w32time
 W32tm /resync /force
 
 # Run Decrapinator to clear programs
