@@ -103,7 +103,7 @@ W32tm /resync /force
 
 # Install Winget
 Write-Host "Checking for dependencies..."
-If(($null -eq (Get-AppxPackage "Microsoft.UI.Xaml.2.7" -AllUsers)) -and ($null -eq (Get-AppxPackage "Microsoft.UI.Xaml.2.7" -AllUsers))) {
+If(($null -eq (Get-AppxPackage "Microsoft.UI.Xaml.2.7*" -AllUsers)) -and ($null -eq (Get-AppxPackage "Microsoft.UI.Xaml.2.8*" -AllUsers))) {
 	Write-Host "Downloading Microsoft UI XAML..."
 	Invoke-WebRequest -Uri $XamlUrl -OutFile ($AdminPath + "xaml.zip")
 	Expand-Archive -LiteralPath ($AdminPath + "xaml.zip") -DestinationPath ($AdminPath + "xaml")
